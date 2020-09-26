@@ -1,0 +1,25 @@
+{
+  "name": "@blue-indium/scss-modules",
+  "version": "0.1.0",
+  "description": "The scss modules for blue indium.",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "repository": "https://github.com/kadhirvelm/blue-indium",
+  "license": "MIT",
+  "dependencies": {
+    "fs-extra": "^9.0.1",
+    "source-maps": "^1.0.12"
+  },
+  "scripts": {
+    "build": "tsc -d",
+    "dev": "tsc -d --watch",
+    "dev:mobile": "tsc -d --watch",
+    "lint": "eslint . --ext .ts,.tsx"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "9.0.1",
+    "@types/source-map": "^0.5.7",
+    "@types/webpack": "^4.41.22",
+    "typescript": "^4.0.3"
+  }
+}

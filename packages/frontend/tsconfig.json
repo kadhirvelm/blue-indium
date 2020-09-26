@@ -9,13 +9,14 @@
         "types": [
             "webpack-env"
         ],
+        "rootDirs": [
+            "./src",
+            "./compiled_types",
+            "./typings",
+        ],
         "resolveJsonModule": true,
         "moduleResolution": "node"
     },
-    "include": [
-        "./src/**/*",
-        "./typings/*.ts"
-    ],
     "exclude": [
         "./dist/*",
         "./node_modules/*",
