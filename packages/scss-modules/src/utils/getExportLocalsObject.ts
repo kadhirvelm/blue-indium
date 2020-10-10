@@ -1,12 +1,12 @@
 export function getExportLocalsObject(src: string): string {
-    const fullExportLocals = src.match(/exports\.locals\s=\s\{[\w\W\s\S]*\}\;/g);
+    const fullExportLocals = RegExp(/exports\.locals\s=\s\{[\w\W\s\S]*\};/g).exec(src);
     if (fullExportLocals == null || fullExportLocals?.length === 0) {
-        throw new Error("Could not identify a exports local from the processed scss modules file.")
+        throw new Error("Could not identify a exports local from the processed scss modules file.");
     }
 
-    const exportObject = fullExportLocals[0].match(/\{[\w\W\s\S]*\}/);
+    const exportObject = RegExp(/\{[\w\W\s\S]*\}/).exec(fullExportLocals[0]);
     if (exportObject == null || exportObject?.length === 0) {
-        throw new Error("Could not identify a complete object from the export locals string.")
+        throw new Error("Could not identify a complete object from the export locals string.");
     }
 
     return exportObject[0];

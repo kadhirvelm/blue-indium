@@ -101,3 +101,5 @@ dist
 .tern-port
 
 compiled_types/
+
+.DS_Store

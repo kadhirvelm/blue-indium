@@ -16,12 +16,13 @@
     "eslint-plugin-prettier": "^3.1.2",
     "eslint-plugin-react": "^7.15.1",
     "eslint-plugin-react-hooks": "^2.0.0",
-    "lerna": "^3.20.1",
+    "lerna": "^3.22.1",
     "prettier": "^1.19.1",
     "typescript": "^3.7.2"
   },
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "packages/puzzles/*"
   ],
   "resolutions": {
     "redux": "4.0.1"

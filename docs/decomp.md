@@ -40,13 +40,29 @@ Open questions
 * Let's not host the game anywhere this time
   * Maybe a raspberry pi on the home network instead – messing with AWS is a pain in the butt
   * It could also be interesting getting a publishing script in place to push to the local network instead of a box
+  * Along with custom code to get a sense of the health on the rapsberry pi
 
 ## Backend implementation
 
+1. Identify my puzzle id + other metadata
+2. Set an initial room state
+3. Define state handlers for room events with payload
+
 ## Frontend implementation
+
+1. Get the room state + other metadata
+2. Shoot off state events with payload
 
 ## Infrastructure implementation
 
+Because we'll only have one implementation running at any given moment, we need:
+
+1. Be able to handle connections and re-connections
+2. Load up defined puzzles
+3. Allow people to select which puzzles to go into
+
 ## Side goals and other thoughts
 
-It would be awesome to get rid of team super cell's scss modules loader and replace it with my own custom loader. It shouldn't be super difficult, but will require at the very least a custom webpack loader. The whole scss setup I've got isn't working super well, it'd be a lot nicer if I could write scss and the types just loaded into the dist folder instead of directly into the src.
+~~It would be awesome to get rid of team super cell's scss modules loader and replace it with my own custom loader. It shouldn't be super difficult, but will require at the very least a custom webpack loader. The whole scss setup I've got isn't working super well, it'd be a lot nicer if I could write scss and the types just loaded into the dist folder instead of directly into the src.~~
+
+Done!

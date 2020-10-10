@@ -7,9 +7,19 @@ export function getTypingsFilePath(this: webpack.loader.LoaderContext) {
         throw new Error("Could not identify where the src path is.");
     }
 
-    const sourcePath = path.dirname(this.resourcePath).match(/\/src.*/g)?.[0]
+    const sourcePath = path.dirname(this.resourcePath).match(/\/src.*/g)?.[0];
 
-    const removeSrcFromPath = (filePath: string | undefined) => filePath === undefined ? "" : filePath.split("/").slice(2).join("/");
+    const removeSrcFromPath = (filePath: string | undefined) =>
+        filePath === undefined
+            ? ""
+            : filePath
+                  .split("/")
+                  .slice(2)
+                  .join("/");
 
-    return { path: path.join(srcPath[0], "compiled_types", removeSrcFromPath(sourcePath) ?? ""), sourcePath, file: path.basename(this.resourcePath) };
+    return {
+        path: path.join(srcPath[0], "compiled_types", removeSrcFromPath(sourcePath) ?? ""),
+        sourcePath,
+        file: path.basename(this.resourcePath),
+    };
 }

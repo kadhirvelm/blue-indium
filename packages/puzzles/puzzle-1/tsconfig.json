@@ -1,0 +1,23 @@
+{
+  "extends": "../../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "sourceMap": true,
+    "jsx": "react",
+    "rootDirs": [
+      "./src",
+      "./compiled_types"
+    ],
+    "module": "es6",
+    "moduleResolution": "node",
+    "declaration": true,
+    "declarationMap": true,
+  },
+  "include": [
+    "./src/**/*"
+  ],
+  "exclude": [
+    "./dist/*",
+    "./node_modules/*"
+  ]
+}

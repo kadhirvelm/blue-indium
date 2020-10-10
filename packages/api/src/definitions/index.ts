@@ -1,2 +1,2 @@
-export * from "./sampleService";
-export * from "./gameSocket";
+export * from "./puzzleService";
+export * from "./puzzleSocketService";

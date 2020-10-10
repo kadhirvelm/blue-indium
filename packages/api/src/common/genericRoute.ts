@@ -3,7 +3,7 @@ import { PORT, ORIGIN } from "../constants";
 
 type IMethods = "get" | "post" | "put" | "delete";
 
-type IBackendEndpointResponse<T, E> = (payload: T, response: Express.Response) => Promise<E>;
+type IBackendEndpointResponse<T, E> = (payload: T, response: Express.Response) => Promise<E> | E;
 type IBackendEndpointDefinition<T, E> = (
     payload: T,
     response: Express.Response,
@@ -12,20 +12,7 @@ type IBackendEndpointDefinition<T, E> = (
 
 type IFrontendEndpointDefintion<Payload, Response> = (payload: Payload) => Promise<Response>;
 
-export interface IEndpointDefiniton<Payload extends {}, Response extends {}> {
-    backend: {
-        endpoint: string;
-        method: IMethods;
-        implementation: IBackendEndpointDefinition<Payload, Response>;
-    };
-    frontend: IFrontendEndpointDefintion<Payload, Response>;
-}
-
-export interface IService {
-    [key: string]: IEndpointDefiniton<any, any>;
-}
-
-export function backendEndpointImplementation<Payload, Response>() {
+function backendEndpointImplementation<Payload, Response>() {
     return async (
         payload: Payload,
         response: Express.Response,
@@ -40,7 +27,7 @@ export function backendEndpointImplementation<Payload, Response>() {
     };
 }
 
-export function frontendEndpointImplementation<Payload, Response>(
+function frontendEndpointImplementation<Payload, Response>(
     endpoint: string,
     method: IMethods = "get",
 ): IFrontendEndpointDefintion<Payload, Response> {
@@ -60,5 +47,32 @@ export function frontendEndpointImplementation<Payload, Response>(
         }
 
         return (await rawResponse.json()) as Response;
+    };
+}
+
+export interface IEndpointDefiniton<Payload extends {}, Response extends {}> {
+    backend: {
+        endpoint: string;
+        method: IMethods;
+        implementation: IBackendEndpointDefinition<Payload, Response>;
+    };
+    frontend: IFrontendEndpointDefintion<Payload, Response>;
+}
+
+export interface IService {
+    [key: string]: IEndpointDefiniton<any, any>;
+}
+
+export function instantiateRoute<Payload, Response>(
+    method: IMethods,
+    endpoint: string,
+): IEndpointDefiniton<Payload, Response> {
+    return {
+        backend: {
+            endpoint,
+            implementation: backendEndpointImplementation<Payload, Response>(),
+            method,
+        },
+        frontend: frontendEndpointImplementation<Payload, Response>(endpoint, method),
     };
 }

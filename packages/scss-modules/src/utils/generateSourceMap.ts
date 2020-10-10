@@ -1,37 +1,63 @@
-import sourceMap from "source-map";
+import { SourceMapConsumer, SourceMapGenerator } from "source-map";
 import path from "path";
 
-export function generateSourceMap(rawInputString: string, exportLocalsObject: { [key: string]: string }, sourcePath: string | undefined, file: string) {
-    const rawSourceMap = rawInputString.match(/\{\"version\".*\}/g);
+export async function generateSourceMap(
+    rawInputString: string,
+    exportLocalsObject: { [key: string]: string },
+    sourcePath: string | undefined,
+    file: string,
+) {
+    const rawSourceMap = RegExp(/\{"version".*\}/g).exec(rawInputString);
 
     if (rawSourceMap == null || rawSourceMap.length === 0) {
-        throw new Error("Could not find raw source map from css-loader. Please ensure css-loader is generating source-maps.");
+        throw new Error(
+            "Could not find raw source map from css-loader. Please ensure css-loader is generating source-maps.",
+        );
     }
 
-    const generatedContentSplitByNewLine = rawInputString.match(/\[module.id\, \"[^\"]*\"/g)?.[0].match(/\".*\"/g)?.[0].split("\\n");
+    const generatedContentSplitByNewLine = rawInputString
+        .match(/\[module.id, "[^"]*"/g)?.[0]
+        .match(/".*"/g)?.[0]
+        .split("\\n");
     if (generatedContentSplitByNewLine == null || generatedContentSplitByNewLine.length === 0) {
         throw new Error("Could not identify generated content from css modules.");
     }
 
-    const originalSourceMap = new sourceMap.SourceMapConsumer(JSON.parse(rawSourceMap[0]));
-    const newSourceMap = new sourceMap.SourceMapGenerator({ file: `${file}.d.ts` });
+    const originalSourceMap = await new SourceMapConsumer(JSON.parse(rawSourceMap[0]));
+    const newSourceMap = new SourceMapGenerator({ file: `${file}.d.ts` });
 
-    const getGeneratedLine = (exportLocalLine: number) => (exportLocalLine * 2) + 3;
+    const getGeneratedLine = (exportLocalLine: number) => exportLocalLine * 2 + 3;
 
-    const getOutOfDirectory = sourcePath?.split("/").slice(1).map(() => "..") ?? [];
+    const getOutOfDirectory =
+        sourcePath
+            ?.split("/")
+            .slice(1)
+            .map(() => "..") ?? [];
     const finalFilePath = path.join(...getOutOfDirectory, sourcePath ?? "", file);
 
     let alreadyCompletedLine = 0;
     Object.values(exportLocalsObject).forEach((value, exportLocalLine) => {
         generatedContentSplitByNewLine.slice(alreadyCompletedLine).forEach((content, line) => {
-            if (content.match(value) == null) {
+            if (RegExp(value).exec(content) == null) {
                 return;
             }
 
-            const originalLine = originalSourceMap.originalPositionFor({ line: alreadyCompletedLine + line + 1, column: 0 });
+            const originalLine = originalSourceMap.originalPositionFor({
+                line: alreadyCompletedLine + line + 1,
+                column: 0,
+            });
             const generatedLine = getGeneratedLine(exportLocalLine);
 
-            newSourceMap.addMapping({ generated: { line: generatedLine, column: 1 }, original: { line: originalLine.line, column: originalLine.column }, source: finalFilePath, name: value });
+            if (originalLine.line == null || originalLine.column == null) {
+                return;
+            }
+
+            newSourceMap.addMapping({
+                generated: { line: generatedLine, column: 1 },
+                original: { line: originalLine.line, column: originalLine.column },
+                source: finalFilePath,
+                name: value,
+            });
 
             alreadyCompletedLine = line + 1;
         });

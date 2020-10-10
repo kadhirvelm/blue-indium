@@ -14,7 +14,7 @@
             "./compiled_types",
             "./typings",
         ],
-        "resolveJsonModule": true,
+        "module": "ES6",
         "moduleResolution": "node"
     },
     "exclude": [

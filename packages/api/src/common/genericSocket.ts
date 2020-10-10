@@ -1,66 +1,85 @@
-import { Socket as ServerSocket, Namespace } from "socket.io";
-import * as ClientSocket from "socket.io-client";
+import SocketIOServer from "socket.io";
 
-export interface ISocketMessage {
-    messageName: string;
+/** To server from client */
+
+type IToServerBackend<Payload> = (
+    socket: SocketIOServer.Socket,
+) => { onEvent: (callback: (payload: Payload) => void) => void };
+type IToServerFrontend<Payload> = (socket: SocketIOClient.Socket) => { sendEvent: (payload: Payload) => void };
+
+export interface IToServerSingleEvent<Payload = any> {
+    backend: IToServerBackend<Payload>;
+    frontend: IToServerFrontend<Payload>;
 }
 
-export function backendFromClient<Input>(socket: ServerSocket, socketMessage: ISocketMessage) {
-    return (callback: (payload: Input) => void) => {
-        socket.on(socketMessage.messageName, callback);
+export interface IToServerEvents {
+    [eventName: string]: IToServerSingleEvent<any>;
+}
+
+function toServerBackendImplementation<Payload>(socket: SocketIOServer.Socket, eventName: string) {
+    return {
+        onEvent: (callback: (payload: Payload) => void) => {
+            socket.on(eventName, callback);
+        },
     };
 }
 
-export function frontendToServer<Input>(socket: typeof ClientSocket.Socket, socketMessage: ISocketMessage) {
-    return (payload: Input) => {
-        socket.emit(socketMessage.messageName, payload);
+function toServerFrontendImplementation<Payload>(socket: SocketIOClient.Socket, eventName: string) {
+    return {
+        sendEvent: (payload: Payload) => {
+            socket.emit(eventName, payload);
+        },
     };
 }
 
-export function backendToClient<Input>(socket: ServerSocket | Namespace, socketMessage: ISocketMessage) {
-    return (payload: Input) => {
-        socket.emit(socketMessage.messageName, payload);
+export function instantiateToServerEvent<Payload = any>(eventName: string): IToServerSingleEvent<Payload> {
+    return {
+        backend: (socket: SocketIOServer.Socket) => toServerBackendImplementation<Payload>(socket, eventName),
+        frontend: (socket: SocketIOClient.Socket) => toServerFrontendImplementation<Payload>(socket, eventName),
     };
 }
 
-export function frontendFromServer<Input>(socket: typeof ClientSocket.Socket, socketMessage: ISocketMessage) {
-    return (callback: (payload: Input) => void) => {
-        socket.on(socketMessage.messageName, callback);
+/** From server to client */
+
+type IFromServerBackend<Payload> = (
+    socket: SocketIOServer.Socket | SocketIOServer.Namespace,
+) => { sendEvent: (payload: Payload) => void };
+type IFromServerFrontend<Payload> = (
+    socket: SocketIOClient.Socket,
+) => { onEvent: (callback: (payload: Payload) => void) => void };
+
+export interface IFromServerSingleEvent<Payload> {
+    backend: IFromServerBackend<Payload>;
+    frontend: IFromServerFrontend<Payload>;
+}
+
+export interface IFromServerEvents {
+    [eventName: string]: IFromServerSingleEvent<any>;
+}
+
+function fromServerBackendImplementation<Payload>(
+    socket: SocketIOServer.Socket | SocketIOServer.Namespace,
+    eventName: string,
+) {
+    return {
+        sendEvent: (payload: Payload) => {
+            socket.emit(eventName, payload);
+        },
     };
 }
 
-export type IFromClientCallback<T> = (callback: (payload: T) => void) => void;
-export interface IFromClient {
-    [messageName: string]: IFromClientCallback<any>;
-}
-
-export type IToClientCallback<T> = (payload: T) => void;
-export interface IToClient {
-    [messageName: string]: IToClientCallback<any>;
-}
-
-export type IToServerCallback<T> = (payload: T) => void;
-export interface IToServer {
-    [messageName: string]: IToServerCallback<any>;
-}
-
-export type IFromServerCallback<T> = (callback: (payload: T) => void) => void;
-export interface IFromServer {
-    [messageName: string]: IFromServerCallback<any>;
-}
-
-export interface ISocketService<
-    FromClient extends IFromClient,
-    ToClient extends IToClient,
-    ToServer extends IToServer,
-    FromServer extends IFromServer
-> {
-    backend: {
-        fromClient: (socket: ServerSocket) => FromClient;
-        toClient: (socket: ServerSocket | Namespace) => ToClient;
+function fromServerFrontendImplementation<Payload>(socket: SocketIOClient.Socket, eventName: string) {
+    return {
+        onEvent: (callback: (payload: Payload) => void) => {
+            socket.on(eventName, callback);
+        },
     };
-    frontend: {
-        toServer: (socket: typeof ClientSocket.Socket) => ToServer;
-        fromServer: (socket: typeof ClientSocket.Socket) => FromServer;
+}
+
+export function instantiateFromServerEvent<Payload>(eventName: string): IFromServerSingleEvent<Payload> {
+    return {
+        backend: (socket: SocketIOServer.Socket | SocketIOServer.Namespace) =>
+            fromServerBackendImplementation<Payload>(socket, eventName),
+        frontend: (socket: SocketIOClient.Socket) => fromServerFrontendImplementation<Payload>(socket, eventName),
     };
 }

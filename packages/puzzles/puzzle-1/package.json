@@ -1,44 +1,34 @@
 {
-  "name": "@blue-indium/frontend",
-  "version": "1.0.0",
-  "description": "Frontend for blue indium",
+  "name": "@blue-indium/puzzles-puzzle-1",
+  "version": "0.1.0",
+  "description": "Puzzle 1",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
-  "scripts": {
-    "dev": "webpack-dev-server",
-    "lint": "eslint . --ext .ts,.tsx",
-    "build": "webpack"
-  },
-  "sideEffects": [
-    "*.css"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/kadhirvelm/blue-indium"
-  },
-  "author": "kadhirvelm",
+  "repository": "https://github.com/kadhirvelm/blue-indium",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/kadhirvelm/blue-indium/issues"
-  },
-  "homepage": "https://github.com/kadhirvelm/blue-indium#readme",
+  "type": "module",
+  "module": "dist/index.js",
   "dependencies": {
     "@blue-indium/api": "^0.1.0",
-    "@blue-indium/puzzles-puzzle-1": "^0.1.0",
     "react": "^16.12.0",
-    "react-dom": "^16.12.0",
-    "socket.io-client": "^2.3.1"
+    "react-dom": "^16.12.0"
+  },
+  "scripts": {
+    "build": "webpack --config webpack.config.cjs",
+    "dev:self": "webpack --config webpack.config.cjs --watch",
+    "dev:frontend": "cd ../../frontend && yarn dev",
+    "dev:backend": "cd ../../backend && yarn dev",
+    "dev": "yarn dev:self & yarn dev:frontend & yarn dev:backend",
+    "lint": "eslint . --ext .ts,.tsx"
   },
   "devDependencies": {
     "@blue-indium/scss-modules": "^0.1.0",
     "@types/react": "^16.9.17",
     "@types/react-dom": "^16.9.4",
-    "@types/socket.io-client": "^1.4.34",
     "@types/webpack-env": "^1.15.0",
     "compression-webpack-plugin": "^3.1.0",
     "css-loader": "^3.4.0",
     "file-loader": "^6.0.0",
-    "html-webpack-plugin": "^3.2.0",
     "mini-css-extract-plugin": "^0.9.0",
     "node-sass": "^4.13.0",
     "react-hot-loader": "^4.12.18",
