@@ -1,13 +1,16 @@
 {
-  "name": "@blue-indium/puzzles-puzzle-1",
+  "name": "@blue-indium/puzzle-template",
   "version": "0.1.0",
-  "description": "Puzzle 1",
+  "description": "puzzle template",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "repository": "https://github.com/kadhirvelm/blue-indium",
   "license": "MIT",
   "type": "module",
   "module": "dist/index.js",
+  "sideEffects": [
+    "*.css"
+  ],
   "dependencies": {
     "@blue-indium/api": "^0.1.0",
     "react": "^16.12.0",
@@ -29,7 +32,7 @@
     "compression-webpack-plugin": "^3.1.0",
     "css-loader": "^3.4.0",
     "file-loader": "^6.0.0",
-    "mini-css-extract-plugin": "^0.9.0",
+    "mini-css-extract-plugin": "^1.0.0",
     "node-sass": "^4.13.0",
     "react-hot-loader": "^4.12.18",
     "sass": "^1.3.0",

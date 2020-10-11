@@ -2,9 +2,9 @@ const path = require("path");
 const nodeExternals = require("webpack-node-externals");
 
 module.exports = {
-    output : {
+    output: {
         filename: "index.js",
-        path : path.resolve(__dirname , "dist"),
+        path: path.resolve(__dirname, "dist"),
     },
 
     entry: "./src/index.ts",
@@ -31,10 +31,10 @@ module.exports = {
                 use: [
                     {
                         loader: "ts-loader",
-                    }
-                ]
+                    },
+                ],
             },
-        ]
+        ],
     },
 
     plugins: [],

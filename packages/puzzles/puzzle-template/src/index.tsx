@@ -1,16 +1,16 @@
 import { instantiateToServerEvent, IPuzzlePlugin } from "@blue-indium/api";
 import * as React from "react";
-import { SampleComponent } from "./components/sampleComponent";
 import { IGameState, IInternalState, ISocketService } from "./types";
+import { SampleComponent } from "./components/sampleComponent";
 
-export const PuzzleOne: IPuzzlePlugin<IGameState, IInternalState, ISocketService> = {
+export const PuzzleTemplate: IPuzzlePlugin<IGameState, IInternalState, ISocketService> = {
     backend: {
-        openTreasureChest: (_payload, state) => {
+        toggleTreasureChest: (payload, state) => {
             return {
                 ...state,
                 gameState: {
                     ...state.gameState,
-                    hasTreasureChestBeenOpened: true,
+                    isTreasureChestOpen: payload.isOpen,
                 },
             };
         },
@@ -19,14 +19,14 @@ export const PuzzleOne: IPuzzlePlugin<IGameState, IInternalState, ISocketService
         return <SampleComponent gameState={gameState} services={services} />;
     },
     initialState: {
-        initialGameState: { hasTreasureChestBeenOpened: false },
+        initialGameState: { isTreasureChestOpen: false },
         initialInternalState: {},
     },
     metadata: {
-        id: "puzzle-one",
-        name: "Puzzle one",
+        id: "puzzle-template",
+        name: "Puzzle Template",
     },
     socketService: {
-        openTreasureChest: instantiateToServerEvent("openTreasureChest"),
+        toggleTreasureChest: instantiateToServerEvent("toggleTreasureChest"),
     },
 };

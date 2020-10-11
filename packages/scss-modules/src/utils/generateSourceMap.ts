@@ -6,7 +6,7 @@ export async function generateSourceMap(
     exportLocalsObject: { [key: string]: string },
     sourcePath: string | undefined,
     file: string,
-) {
+): Promise<SourceMapGenerator> {
     const rawSourceMap = RegExp(/\{"version".*\}/g).exec(rawInputString);
 
     if (rawSourceMap == null || rawSourceMap.length === 0) {

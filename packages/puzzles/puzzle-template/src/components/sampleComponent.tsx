@@ -1,6 +1,7 @@
-import * as React from "react";
 import { IConvertToFrontend } from "@blue-indium/api";
+import * as React from "react";
 import { IGameState, ISocketService } from "../types";
+import styles from "./sampleComponent.module.scss";
 
 interface IProps {
     gameState: IGameState | undefined;
@@ -15,19 +16,16 @@ export class SampleComponent extends React.PureComponent<IProps> {
         }
 
         return (
-            <div>
+            <div className={styles.sampleComponentContainer}>
                 <button onClick={this.onButtonClick} type="button">
-                    Open treasure chest.
+                    {gameState.isTreasureChestOpen ? "Close" : "Open"} treasure chest.
                 </button>
-                <span>
-                    {gameState.hasTreasureChestBeenOpened ? "Yay, you've opened the chest" : "The chest is closed"}
-                </span>
             </div>
         );
     }
 
     private onButtonClick = () => {
-        const { services } = this.props;
-        services.openTreasureChest({});
+        const { gameState, services } = this.props;
+        services.toggleTreasureChest({ isOpen: !gameState?.isTreasureChestOpen });
     };
 }

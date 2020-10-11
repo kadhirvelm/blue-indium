@@ -1,8 +1,10 @@
 const path = require("path");
-const miniCssExtractPlugin = require("mini-css-extract-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 const webpack = require("webpack");
 const CompressionPlugin = require("compression-webpack-plugin");
+
+const PUZZLE_NAME = encodeURIComponent(JSON.parse(require("fs").readFileSync("./package.json").toString()).name.toString());
 
 module.exports = {
     output : {
@@ -35,9 +37,12 @@ module.exports = {
                 test: /\.module.s(a|c)ss$/,
                 include: path.resolve(__dirname, "src"),
                 loader: [
-                    miniCssExtractPlugin.loader,
+                    MiniCssExtractPlugin.loader,
                     {
                         loader: require.resolve("@blue-indium/scss-modules"),
+                        options: {
+                            namespace: "puzzles",
+                        }
                     },
                     {
                         loader: "css-loader",
@@ -64,7 +69,7 @@ module.exports = {
                 include: path.resolve(__dirname, "src"),
                 exclude: /\.module.s(a|c)ss$/,
                 loader: [
-                    miniCssExtractPlugin.loader,
+                    MiniCssExtractPlugin.loader,
                     "css-loader",
                     {
                         loader: "sass-loader",
@@ -88,9 +93,8 @@ module.exports = {
     },
 
     plugins: [
-        new miniCssExtractPlugin({
-            filename: "[name].[hash].css",
-            chunkFilename: "[id].[hash].css",
+        new MiniCssExtractPlugin({
+            filename: `${PUZZLE_NAME}.css`,
         }),
         new webpack.optimize.AggressiveMergingPlugin(),
         ...(process.env.NODE_ENV === "production" ? [new CompressionPlugin({
@@ -101,6 +105,9 @@ module.exports = {
             deleteOriginalAssets: true,
             minRatio: 0.8,
         })] : [new BundleAnalyzerPlugin({ analyzerMode: "static", openAnalyzer: false })]),
+        new webpack.DefinePlugin({
+            puzzleName: PUZZLE_NAME,
+        })
     ],
 
     resolve: {

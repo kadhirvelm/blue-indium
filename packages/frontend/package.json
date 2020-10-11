@@ -24,7 +24,7 @@
   "homepage": "https://github.com/kadhirvelm/blue-indium#readme",
   "dependencies": {
     "@blue-indium/api": "^0.1.0",
-    "@blue-indium/puzzles-puzzle-1": "^0.1.0",
+    "@blue-indium/puzzles": "^0.1.0",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "socket.io-client": "^2.3.1"

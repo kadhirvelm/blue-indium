@@ -6,7 +6,13 @@ import { getTypingsFilePath } from "./utils/getTypingsFilePath";
 import { ensureDirectoryExists } from "./utils/ensureDirectoryExists";
 import { generateSourceMap } from "./utils/generateSourceMap";
 
-export default function(this: webpack.loader.LoaderContext, src: string) {
+export default async function(this: webpack.loader.LoaderContext, src: string) {
+    const async = this.async();
+
+    if (async === undefined) {
+        return;
+    }
+
     const exportLocalsObject = JSON.parse(getExportLocalsObject(src));
 
     let typingsFile = getTypingsFile(exportLocalsObject);
@@ -16,7 +22,7 @@ export default function(this: webpack.loader.LoaderContext, src: string) {
 
     let generatedSourceMap;
     if (this.sourceMap) {
-        generatedSourceMap = generateSourceMap(
+        generatedSourceMap = await generateSourceMap(
             src,
             exportLocalsObject,
             typingsFilePath.sourcePath,
@@ -31,5 +37,5 @@ export default function(this: webpack.loader.LoaderContext, src: string) {
 
     this.addDependency(this.resourcePath);
 
-    return src;
+    async(null, src);
 }

@@ -1,11 +1,14 @@
 import * as React from "react";
 import SocketIO from "socket.io-client";
-import { PuzzleOne } from "@blue-indium/puzzles-puzzle-1";
-import { FromServerToPlayer } from "@blue-indium/api";
+import { PuzzlesFrontend } from "@blue-indium/puzzles";
+import { dynamicallyImportCSSForPuzzle, FromServerToPlayer } from "@blue-indium/api";
+import * as styles from "./helloWorld.module.scss";
 
 interface IState {
     gameState: any | undefined;
 }
+
+const PuzzleTemplate = PuzzlesFrontend["puzzle-template"].puzzle;
 
 export class HelloWorld extends React.PureComponent<{}, IState> {
     private socketService: any = undefined;
@@ -15,10 +18,10 @@ export class HelloWorld extends React.PureComponent<{}, IState> {
     };
 
     public componentDidMount() {
-        const socket = SocketIO(`127.0.0.1:3000/${PuzzleOne.metadata.id}`);
+        const socket = SocketIO(`127.0.0.1:3000/${PuzzleTemplate.metadata.id}`);
 
-        this.socketService = Object.keys(PuzzleOne.socketService)
-            .map(key => ({ [key]: (PuzzleOne.socketService as any)[key].frontend(socket).sendEvent }))
+        this.socketService = Object.keys(PuzzleTemplate.socketService)
+            .map(key => ({ [key]: (PuzzleTemplate.socketService as any)[key].frontend(socket).sendEvent }))
             .reduce((a, b) => ({ ...a, ...b }), {});
 
         socket.on("connect", () => {
@@ -26,6 +29,8 @@ export class HelloWorld extends React.PureComponent<{}, IState> {
                 this.setState({ gameState: newGameState.gameState });
             });
         });
+
+        dynamicallyImportCSSForPuzzle(PuzzlesFrontend["puzzle-template"].packageName);
     }
 
     public render() {
@@ -34,6 +39,6 @@ export class HelloWorld extends React.PureComponent<{}, IState> {
             return null;
         }
 
-        return PuzzleOne.frontend(gameState, this.socketService);
+        return <div className={styles.test}>{PuzzleTemplate.frontend(gameState, this.socketService)}</div>;
     }
 }

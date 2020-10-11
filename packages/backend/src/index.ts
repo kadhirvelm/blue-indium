@@ -3,6 +3,7 @@ import compression from "compression";
 import express from "express";
 import { createServer } from "http";
 import { instantiatePuzzles } from "./routes/instantiatePuzzles";
+import { addPuzzleCSS } from "./routes/puzzleCSS";
 import { configurePuzzleService } from "./routes/puzzleService";
 import { configureSecurity } from "./security/configureSecurity";
 
@@ -12,6 +13,7 @@ const server = createServer(app);
 app.use(compression());
 configureSecurity(app);
 
+addPuzzleCSS(app);
 configurePuzzleService(app);
 instantiatePuzzles(server);
 

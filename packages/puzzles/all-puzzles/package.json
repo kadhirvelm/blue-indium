@@ -1,16 +1,16 @@
 {
-  "name": "@blue-indium/scss-modules",
+  "name": "@blue-indium/puzzles",
   "version": "0.1.0",
-  "description": "The scss modules for blue indium.",
+  "description": "All the puzzles in blue indium collected",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "repository": "https://github.com/kadhirvelm/blue-indium",
   "license": "MIT",
+  "type": "module",
   "dependencies": {
-    "fs-extra": "^9.0.1",
-    "loader-utils": "^2.0.0",
-    "source-map": "^0.7.3",
-    "webpack": "^4.42.1"
+    "@blue-indium/api": "^0.1.0",
+    "@blue-indium/puzzle-template": "^0.1.0",
+    "lodash": "^4.17.20"
   },
   "scripts": {
     "build": "tsc -d",
@@ -19,10 +19,6 @@
     "lint": "eslint . --ext .ts,.tsx"
   },
   "devDependencies": {
-    "@types/fs-extra": "9.0.1",
-    "@types/loader-utils": "^2.0.1",
-    "@types/source-map": "^0.5.7",
-    "@types/webpack": "^4.41.22",
     "typescript": "^4.0.3"
   }
 }
