@@ -1,1 +1,0 @@
-declare const puzzleName: string;

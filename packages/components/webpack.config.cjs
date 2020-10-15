@@ -1,18 +1,8 @@
-/* eslint-disable import/no-extraneous-dependencies */
-
 const path = require("path");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
 const webpack = require("webpack");
 const CompressionPlugin = require("compression-webpack-plugin");
-
-const PUZZLE_NAME = encodeURIComponent(
-    JSON.parse(
-        require("fs")
-            .readFileSync("./package.json")
-            .toString(),
-    ).name.toString(),
-);
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
     output: {
@@ -22,16 +12,14 @@ module.exports = {
         libraryTarget: "commonjs2",
     },
 
+    mode: process.env.NODE_ENV === "production" ? "production" : "development",
+
+    devtool: process.env.NODE_ENV === "production" ? "production" : "source-map",
+
     externals: {
         react: "React",
         "react-dom": "ReactDOM",
     },
-
-    stats: "errors-only",
-
-    mode: process.env.NODE_ENV === "production" ? "production" : "development",
-
-    devtool: process.env.NODE_ENV === "production" ? "production" : "source-map",
 
     module: {
         rules: [
@@ -40,6 +28,9 @@ module.exports = {
                 include: path.resolve(__dirname, "src"),
                 exclude: /node_modules/,
                 use: [
+                    {
+                        loader: "react-hot-loader/webpack",
+                    },
                     {
                         loader: "ts-loader",
                         options: {
@@ -55,9 +46,6 @@ module.exports = {
                     MiniCssExtractPlugin.loader,
                     {
                         loader: require.resolve("@blue-indium/scss-modules"),
-                        options: {
-                            namespace: "puzzles",
-                        },
                     },
                     {
                         loader: "css-loader",
@@ -94,22 +82,12 @@ module.exports = {
                     },
                 ],
             },
-            {
-                type: "javascript/auto",
-                test: /\.json$/,
-                include: path.resolve(__dirname, "src"),
-                exclude: /node_modules/,
-                loader: "file-loader",
-                options: {
-                    name: "[name].[ext]",
-                },
-            },
         ],
     },
 
     plugins: [
         new MiniCssExtractPlugin({
-            filename: `${PUZZLE_NAME}.css`,
+            filename: "components.css",
         }),
         new webpack.optimize.AggressiveMergingPlugin(),
         ...(process.env.NODE_ENV === "production"

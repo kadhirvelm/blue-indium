@@ -1,7 +1,7 @@
+import { dynamicallyImportCSS, FromServerToPlayer } from "@blue-indium/api";
+import { PuzzlesFrontend } from "@blue-indium/puzzles";
 import * as React from "react";
 import SocketIO from "socket.io-client";
-import { PuzzlesFrontend } from "@blue-indium/puzzles";
-import { dynamicallyImportCSSForPuzzle, FromServerToPlayer } from "@blue-indium/api";
 import * as styles from "./helloWorld.module.scss";
 
 interface IState {
@@ -30,7 +30,8 @@ export class HelloWorld extends React.PureComponent<{}, IState> {
             });
         });
 
-        dynamicallyImportCSSForPuzzle(PuzzlesFrontend["puzzle-template"].packageName);
+        dynamicallyImportCSS(PuzzlesFrontend["puzzle-template"].packageName);
+        dynamicallyImportCSS("components");
     }
 
     public render() {

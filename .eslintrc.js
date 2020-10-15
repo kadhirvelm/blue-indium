@@ -3,6 +3,7 @@ module.exports = {
     parserOptions: {
       tsconfigRootDir: __dirname,
       project: ["./tsconfig.json", "./packages/*/tsconfig.json", "./packages/puzzles/*/tsconfig.json"],
+      extraFileExtensions: [".cjs"]
     },
 
     plugins: [

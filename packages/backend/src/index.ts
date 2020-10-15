@@ -2,6 +2,7 @@ import { ORIGIN, PORT } from "@blue-indium/api";
 import compression from "compression";
 import express from "express";
 import { createServer } from "http";
+import { addComponentsCSS } from "./routes/componentsCSS";
 import { instantiatePuzzles } from "./routes/instantiatePuzzles";
 import { addPuzzleCSS } from "./routes/puzzleCSS";
 import { configurePuzzleService } from "./routes/puzzleService";
@@ -11,9 +12,11 @@ const app = express();
 const server = createServer(app);
 
 app.use(compression());
+
 configureSecurity(app);
 
 addPuzzleCSS(app);
+addComponentsCSS(app);
 configurePuzzleService(app);
 instantiatePuzzles(server);
 

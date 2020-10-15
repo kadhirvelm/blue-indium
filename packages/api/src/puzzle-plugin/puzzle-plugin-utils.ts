@@ -1,7 +1,7 @@
-export function dynamicallyImportCSSForPuzzle(puzzleName: string) {
+export function dynamicallyImportCSS(fileName: string) {
     const newLinkElement = document.createElement("link");
 
-    newLinkElement.href = `http://127.0.0.1:3000/${puzzleName}.css`;
+    newLinkElement.href = `http://127.0.0.1:3000/${fileName}.css`;
     newLinkElement.rel = "stylesheet";
 
     document.head.append(newLinkElement);

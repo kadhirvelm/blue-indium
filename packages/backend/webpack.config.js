@@ -20,7 +20,9 @@ module.exports = {
         __filename: false,
     },
 
-    externals: [nodeExternals()],
+    stats: "errors-only",
+
+    externals: [nodeExternals(), "bufferutil", "utf-8-validate"],
 
     module: {
         rules: [

@@ -5,8 +5,6 @@ const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
 const webpack = require("webpack");
 const CompressionPlugin = require("compression-webpack-plugin");
 
-const PACKAGE_NAME = encodeURIComponent(JSON.parse(require("fs").readFileSync("./package.json").toString()).name.toString());
-
 module.exports = {
     output: {
         filename: "index.js",
@@ -24,6 +22,8 @@ module.exports = {
         port: 3001,
         stats: {
             colors: true,
+            builtAt: false,
+            entrypoints: false,
             hash: false,
             version: false,
             timings: false,
@@ -128,7 +128,7 @@ module.exports = {
             template: "./src/index.html",
         }),
         new MiniCssExtractPlugin({
-            filename: `${PACKAGE_NAME}.css`,
+            filename: process.env.NODE_ENV === "production" ? "main-[hash].css" : "main-development.css",
         }),
         new webpack.optimize.AggressiveMergingPlugin(),
         ...(process.env.NODE_ENV === "production"
@@ -147,5 +147,10 @@ module.exports = {
 
     resolve: {
         extensions: [".js", ".ts", ".tsx", ".scss", ".json"],
+    },
+
+    externals: {
+        react: "React",
+        "react-dom": "ReactDOM",
     },
 };
