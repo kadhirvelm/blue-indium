@@ -6,7 +6,6 @@
   "typings": "dist/index.d.ts",
   "repository": "https://github.com/kadhirvelm/blue-indium",
   "license": "MIT",
-  "type": "module",
   "dependencies": {
     "@blue-indium/api": "^0.1.0",
     "@blue-indium/puzzle-template": "^0.1.0",

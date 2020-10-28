@@ -3,12 +3,13 @@ const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
 const webpack = require("webpack");
 const CompressionPlugin = require("compression-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = {
     output: {
         filename: "index.js",
         path: path.resolve(__dirname, "dist"),
-        library: "",
+        library: undefined,
         libraryTarget: "commonjs2",
     },
 
@@ -42,7 +43,7 @@ module.exports = {
             {
                 test: /\.module.s(a|c)ss$/,
                 include: path.resolve(__dirname, "src"),
-                loader: [
+                use: [
                     MiniCssExtractPlugin.loader,
                     {
                         loader: require.resolve("@blue-indium/scss-modules"),
@@ -54,8 +55,8 @@ module.exports = {
                             modules: {
                                 mode: "local",
                                 localIdentName: "[path][name]__[local]__[hash:base64:10]",
+                                exportLocalsConvention: "camelCaseOnly",
                             },
-                            localsConvention: "camelCaseOnly",
                             sourceMap: true,
                         },
                     },
@@ -71,7 +72,7 @@ module.exports = {
                 test: /\.s(a|c)ss$/,
                 include: path.resolve(__dirname, "src"),
                 exclude: /\.module.s(a|c)ss$/,
-                loader: [
+                use: [
                     MiniCssExtractPlugin.loader,
                     "css-loader",
                     {
@@ -89,6 +90,7 @@ module.exports = {
         new MiniCssExtractPlugin({
             filename: "components.css",
         }),
+        new CopyWebpackPlugin({ patterns: [{ from: path.join(__dirname, "static"), to: path.join(__dirname, "dist") }] }),
         new webpack.optimize.AggressiveMergingPlugin(),
         ...(process.env.NODE_ENV === "production"
             ? [

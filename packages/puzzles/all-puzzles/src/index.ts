@@ -11,7 +11,13 @@ const Puzzles: Array<{ puzzle: IPuzzlePlugin<any, any, any>; path: string; packa
     },
 ];
 
-export const PuzzlesBackend = _.keyBy(
+export interface IPuzzleBackend {
+    path: string;
+    packageName: string;
+    puzzle: Pick<IPuzzlePlugin<any, any, any>, "backend" | "initialState" | "metadata" | "socketService">;
+}
+
+export const PuzzlesBackend: { [puzzleId: string]: IPuzzleBackend } = _.keyBy(
     Puzzles.map(puzzleData => {
         const backendPuzzle = {
             ...puzzleData,
@@ -23,7 +29,12 @@ export const PuzzlesBackend = _.keyBy(
     puzzleData => puzzleData.puzzle.metadata.id,
 );
 
-export const PuzzlesFrontend = _.keyBy(
+export interface IPuzzleFrontend {
+    packageName: string;
+    puzzle: Pick<IPuzzlePlugin<any, any, any>, "frontend" | "metadata" | "socketService">;
+}
+
+export const PuzzlesFrontend: { [puzzleId: string]: IPuzzleFrontend } = _.keyBy(
     Puzzles.map(puzzleData => {
         const frontendPuzzle = {
             packageName: puzzleData.packageName,

@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { HelloWorld } from "./components/helloWorld";
+import { MainPage } from "./components/mainPage";
 import "./index.scss";
 
-ReactDOM.render(<HelloWorld />, document.getElementById("main-app"));
+ReactDOM.render(<MainPage />, document.getElementById("main-app"));

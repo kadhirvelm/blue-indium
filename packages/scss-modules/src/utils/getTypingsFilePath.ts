@@ -1,6 +1,6 @@
 import * as path from "path";
-import * as webpack from "webpack";
 import { getOptions } from "loader-utils";
+import * as webpack from "webpack";
 
 export function getTypingsFilePath(this: webpack.loader.LoaderContext) {
     const options = getOptions(this);

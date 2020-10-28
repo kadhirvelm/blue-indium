@@ -1,8 +1,10 @@
 import { IToServerSingleEvent } from "../common/genericSocket";
+import { IPlayerToServerTypes } from "../definitions/puzzleSocketService";
+import { IPlayer } from "../types";
 
 interface IPuzzleState<IGameState, IInternalState> {
-    gameState: IGameState;
-    internalState: IInternalState;
+    gameState?: Partial<IGameState>;
+    internalState?: Partial<IInternalState>;
 }
 
 type IAllowedType = string | number | boolean | string[] | number[] | boolean[] | undefined;
@@ -31,6 +33,7 @@ export type IConvertToBackend<ISocketService, IGameState, IInternalState> = {
     [Key in keyof ISocketService]: (
         payload: ISocketService[Key],
         state: IPuzzleState<IGameState, IInternalState>,
+        players: { currentPlayer: IPlayer; allConnectedPlayers: IPlayer[] },
     ) => IPuzzleState<IGameState, IInternalState>;
 };
 
@@ -66,7 +69,7 @@ export interface IPuzzlePlugin<
      */
     frontend: (
         gameState: IGameState | undefined,
-        socketService: IConvertToFrontend<ISocketService>,
+        socketService: IConvertToFrontend<ISocketService> & IConvertToFrontend<IPlayerToServerTypes>,
     ) => React.ReactElement | JSX.Element | Promise<React.ReactElement | JSX.Element>;
     /**
      * Initializes the game state and the internal state to the puzzle. Remember the overall state is shared between all players.

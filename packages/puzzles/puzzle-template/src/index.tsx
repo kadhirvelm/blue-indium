@@ -5,11 +5,9 @@ import { SampleComponent } from "./components/sampleComponent";
 
 export const PuzzleTemplate: IPuzzlePlugin<IGameState, IInternalState, ISocketService> = {
     backend: {
-        toggleTreasureChest: (payload, state) => {
+        toggleTreasureChest: payload => {
             return {
-                ...state,
                 gameState: {
-                    ...state.gameState,
                     isTreasureChestOpen: payload.isOpen,
                 },
             };
@@ -25,6 +23,10 @@ export const PuzzleTemplate: IPuzzlePlugin<IGameState, IInternalState, ISocketSe
     metadata: {
         id: "puzzle-template",
         name: "Puzzle Template",
+        description: "This is the tutorial puzzle.",
+        difficulty: "Super easy",
+        minimumPlayers: 1,
+        recommendedPlayers: 1,
     },
     socketService: {
         toggleTreasureChest: instantiateToServerEvent("toggleTreasureChest"),

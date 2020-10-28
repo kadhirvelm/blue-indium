@@ -1,0 +1,14 @@
+.container {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+}
+
+.top-navigation-bar {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    margin-bottom: 10px;
+}

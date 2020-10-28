@@ -1,4 +1,3 @@
-import * as webpack from "webpack";
 import { writeFileSync } from "fs-extra";
 import { getExportLocalsObject } from "./utils/getExportLocalsObject";
 import { getTypingsFile } from "./utils/getTypingsFile";
@@ -6,7 +5,7 @@ import { getTypingsFilePath } from "./utils/getTypingsFilePath";
 import { ensureDirectoryExists } from "./utils/ensureDirectoryExists";
 import { generateSourceMap } from "./utils/generateSourceMap";
 
-export default async function(this: webpack.loader.LoaderContext, src: string) {
+export default async function(this: any, src: string) {
     const async = this.async();
 
     if (async === undefined) {

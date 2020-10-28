@@ -1,11 +1,4 @@
-export interface ISelectPuzzle {
+export interface IPlayer {
     id: string;
-    metadata: {
-        description?: string;
-        difficulty?: string;
-        minimumPlayers?: number;
-        recommendedPlayers?: number;
-    };
     name: string;
-    rid: string;
 }

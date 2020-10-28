@@ -6,16 +6,29 @@ import {
     IToServerEvents,
     IToServerSingleEvent,
 } from "../common/genericSocket";
+import { IPlayer } from "../types/puzzle";
+
+export interface IPlayerToServerTypes {
+    resetPuzzle: {};
+}
 
 interface IPlayerToServer extends IToServerEvents {
-    onConnect: IToServerSingleEvent<{ playerInformation: { name: string } }>;
+    resetPuzzle: IToServerSingleEvent<IPlayerToServerTypes["resetPuzzle"]>;
 }
 
 export const PlayerToServer: IPlayerToServer = {
-    onConnect: instantiateToServerEvent<{ playerInformation: { name: string } }>("onConnect"),
+    resetPuzzle: instantiateToServerEvent<{}>("resetPuzzle"),
 };
 
-interface IFromServerToPlayer extends IFromServerEvents {
+export interface IInfrastructureToServer extends IToServerEvents {
+    onConnect: IToServerSingleEvent<{ playerInformation: IPlayer }>;
+}
+
+export const InfrastructureToServer: IInfrastructureToServer = {
+    onConnect: instantiateToServerEvent<{ playerInformation: IPlayer }>("onConnect"),
+};
+
+export interface IFromServerToPlayer extends IFromServerEvents {
     onUpdateGameState: IFromServerSingleEvent<{ gameState: any }>;
 }
 

@@ -6,7 +6,6 @@
   "typings": "dist/index.d.ts",
   "repository": "https://github.com/kadhirvelm/blue-indium",
   "license": "MIT",
-  "type": "module",
   "dependencies": {
     "express": "^4.17.1",
     "lodash-es": "^4.17.15",
