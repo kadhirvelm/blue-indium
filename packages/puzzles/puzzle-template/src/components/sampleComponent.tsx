@@ -1,5 +1,6 @@
 import { IConvertToFrontend } from "@blue-indium/api";
 import * as React from "react";
+import { Button } from "antd";
 import { IGameState, ISocketService } from "../types";
 import styles from "./sampleComponent.module.scss";
 
@@ -17,9 +18,9 @@ export class SampleComponent extends React.PureComponent<IProps> {
 
         return (
             <div className={styles.sampleComponentContainer}>
-                <button onClick={this.onButtonClick} type="button">
+                <Button onClick={this.onButtonClick}>
                     {gameState.isTreasureChestOpen ? "Close" : "Open"} treasure chest.
-                </button>
+                </Button>
             </div>
         );
     }

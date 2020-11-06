@@ -21,6 +21,7 @@ module.exports = {
     },
 
     externals: {
+        antd: "antd",
         react: "React",
         "react-dom": "ReactDOM",
     },

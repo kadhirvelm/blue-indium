@@ -1,16 +1,18 @@
-import { InfoCircleOutlined, MenuOutlined, SelectOutlined, UndoOutlined } from "@ant-design/icons";
+import { LikeFilled } from "@ant-design/icons";
 import {
     dynamicallyImportCSS,
     FromServerToPlayer,
     IConvertToFrontend,
+    IDefaultGameState,
     InfrastructureToServer,
     IPlayerToServerTypes,
     PlayerToServer,
 } from "@blue-indium/api";
 import { IPuzzleFrontend } from "@blue-indium/puzzles";
-import { Dropdown, Menu, message } from "antd";
+import { Modal } from "antd";
 import * as React from "react";
 import SocketIO from "socket.io-client";
+import { PuzzleMenu } from "./puzzleMenu";
 import styles from "./showPuzzle.module.scss";
 
 interface IProps {
@@ -19,7 +21,7 @@ interface IProps {
 }
 
 interface IState {
-    gameState: any | undefined;
+    gameState: (IDefaultGameState & any) | undefined;
 }
 
 export class ShowPuzzle extends React.PureComponent<IProps, IState> {
@@ -67,27 +69,15 @@ export class ShowPuzzle extends React.PureComponent<IProps, IState> {
             return null;
         }
 
-        const menu = (
-            <Menu>
-                <Menu.Item>
-                    <InfoCircleOutlined /> Information
-                </Menu.Item>
-                <Menu.Item onClick={this.resetPuzzle}>
-                    <UndoOutlined /> Reset puzzle
-                </Menu.Item>
-                <Menu.Item onClick={resetSelectedPuzzle}>
-                    <SelectOutlined /> Choose a different puzzle
-                </Menu.Item>
-            </Menu>
-        );
+        this.maybeShowCompletedPuzzleModal();
 
         return (
             <div className={styles.container}>
-                <div className={styles.topNavigationBar}>
-                    <Dropdown overlay={menu} trigger={["click", "hover"]}>
-                        <MenuOutlined />
-                    </Dropdown>
-                </div>
+                <PuzzleMenu
+                    playerToServerService={this.playerToServerService}
+                    resetSelectedPuzzle={resetSelectedPuzzle}
+                    puzzleMetadata={puzzle}
+                />
                 {puzzle.frontend(gameState, {
                     ...this.puzzleSocketService,
                     ...this.playerToServerService,
@@ -108,9 +98,26 @@ export class ShowPuzzle extends React.PureComponent<IProps, IState> {
         });
     };
 
-    private resetPuzzle = () => {
-        this.playerToServerService.resetPuzzle({});
+    private maybeShowCompletedPuzzleModal = () => {
+        const { resetSelectedPuzzle } = this.props;
+        const { gameState } = this.state;
 
-        message.success("Reset");
+        if (gameState === undefined || !(gameState as IDefaultGameState).hasSolvedPuzzle) {
+            return;
+        }
+
+        const resetPuzzle = () => {
+            this.playerToServerService.resetPuzzle({});
+            resetSelectedPuzzle();
+        };
+
+        Modal.success({
+            centered: true,
+            content: <div>Congratulations! You completed the puzzle. Time to find another one.</div>,
+            icon: <LikeFilled />,
+            okText: "Complete puzzle",
+            onOk: resetPuzzle,
+            title: "Victory!",
+        });
     };
 }

@@ -46,6 +46,17 @@ export type IConvertToFrontend<ISocketService> = {
 };
 
 /**
+ * The default game state included in every puzzle.
+ */
+export interface IDefaultGameState {
+    /**
+     * By default this is false, please set this variable to true once the users have solved the puzzle. This will bring up the congratulations modal
+     * and take them to select a different puzzle.
+     */
+    hasSolvedPuzzle: boolean;
+}
+
+/**
  * The plugin interface for a blue-indium puzzle. The goal here is to handle all the socket implementations in the background, leaving
  * the developer to focus solely on creating their puzzle.
  *
@@ -62,13 +73,13 @@ export interface IPuzzlePlugin<
      * The backend event handling. The events come from `ISocketService` and will get the type safe payload and the current state (both the game state and the internal state). It should return the new state of the
      * puzzle, both game state and internal state, which will in turn fire off an update event to all connected players.
      */
-    backend: IConvertToBackend<ISocketService, IGameState, IInternalState>;
+    backend: IConvertToBackend<ISocketService, IGameState & IDefaultGameState, IInternalState>;
     /**
      * The frontend display of your puzzle, this is the entry point that blue indium will access to render your puzzle. The socketService events are created
      * from `ISocketService` with all the socket implementations abstracted away so you can just focus on the typed payload.
      */
     frontend: (
-        gameState: IGameState | undefined,
+        gameState: (IGameState & IDefaultGameState) | undefined,
         socketService: IConvertToFrontend<ISocketService> & IConvertToFrontend<IPlayerToServerTypes>,
     ) => React.ReactElement | JSX.Element | Promise<React.ReactElement | JSX.Element>;
     /**

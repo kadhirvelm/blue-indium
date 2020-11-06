@@ -9,6 +9,7 @@ export const PuzzleTemplate: IPuzzlePlugin<IGameState, IInternalState, ISocketSe
             return {
                 gameState: {
                     isTreasureChestOpen: payload.isOpen,
+                    hasSolvedPuzzle: true,
                 },
             };
         },
@@ -23,7 +24,7 @@ export const PuzzleTemplate: IPuzzlePlugin<IGameState, IInternalState, ISocketSe
     metadata: {
         id: "puzzle-template",
         name: "Puzzle Template",
-        description: "This is the tutorial puzzle.",
+        description: "This is the template puzzle.",
         difficulty: "Super easy",
         minimumPlayers: 1,
         recommendedPlayers: 1,

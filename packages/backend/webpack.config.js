@@ -39,8 +39,6 @@ module.exports = {
         ],
     },
 
-    plugins: [],
-
     resolve: {
         extensions: [".js", ".ts"],
     },

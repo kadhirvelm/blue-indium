@@ -1,10 +1,16 @@
-import { FromServerToPlayer, InfrastructureToServer, IPlayer, PlayerToServer } from "@blue-indium/api";
+import {
+    FromServerToPlayer,
+    IDefaultGameState,
+    InfrastructureToServer,
+    IPlayer,
+    PlayerToServer,
+} from "@blue-indium/api";
 import { IPuzzleBackend } from "@blue-indium/puzzles";
 import { Server } from "http";
 import SocketIO from "socket.io";
 
 export class InstantiatePuzzle {
-    private gameState: any;
+    private gameState: IDefaultGameState & any;
     private internalState: any;
     private connectedPlayers: Map<string, IPlayer> = new Map();
 
@@ -86,7 +92,13 @@ export class InstantiatePuzzle {
     }
 
     private resetGameState() {
-        this.gameState = this.selectedPuzzle.puzzle.initialState.initialGameState;
+        this.gameState = { ...this.selectedPuzzle.puzzle.initialState.initialGameState, ...this.getDefaultGameState() };
         this.internalState = this.selectedPuzzle.puzzle.initialState.initialInternalState;
+    }
+
+    private getDefaultGameState(): IDefaultGameState {
+        return {
+            hasSolvedPuzzle: false,
+        };
     }
 }
