@@ -125,6 +125,13 @@ export interface IPuzzlePlugin<
          */
         recommendedPlayers?: number;
     };
+}
+
+export type ICompletePlugin<
+    IGameState extends IConvertToAllowedTypes<IGameState, IAllowedType | IAllowedTypes> = {},
+    IInternalState extends IConvertToAllowedTypes<IInternalState, IAllowedType | IAllowedTypes> = {},
+    ISocketService extends IConvertToAllowedTypes<ISocketService, IAllowedTypes> = {}
+> = IPuzzlePlugin<IGameState, IInternalState, ISocketService> & {
     /**
      * The implemented socket service, this is used to create the sockets used by the backend and frontend. Its implementation details are abstracted
      * away from the puzzle plugin.
@@ -133,4 +140,4 @@ export interface IPuzzlePlugin<
      * exact name used in the `ISocketService` object. This is passed directly to Socket.io and is the only piece that isn't type safe.
      */
     socketService: IToServerEventFromSocketService<ISocketService>;
-}
+};

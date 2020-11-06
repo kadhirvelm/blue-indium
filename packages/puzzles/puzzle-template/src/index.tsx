@@ -1,7 +1,7 @@
-import { instantiateToServerEvent, IPuzzlePlugin } from "@blue-indium/api";
+import { IPuzzlePlugin } from "@blue-indium/api";
 import * as React from "react";
-import { IGameState, IInternalState, ISocketService } from "./types";
 import { SampleComponent } from "./components/sampleComponent";
+import { IGameState, IInternalState, ISocketService } from "./types";
 
 export const PuzzleTemplate: IPuzzlePlugin<IGameState, IInternalState, ISocketService> = {
     backend: {
@@ -25,11 +25,8 @@ export const PuzzleTemplate: IPuzzlePlugin<IGameState, IInternalState, ISocketSe
         id: "puzzle-template",
         name: "Puzzle Template",
         description: "This is the template puzzle.",
-        difficulty: "Super easy",
+        difficulty: "Trivial",
         minimumPlayers: 1,
         recommendedPlayers: 1,
-    },
-    socketService: {
-        toggleTreasureChest: instantiateToServerEvent("toggleTreasureChest"),
     },
 };

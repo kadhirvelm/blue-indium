@@ -41,7 +41,9 @@ export class ShowPuzzle extends React.PureComponent<IProps, IState> {
         this.playerSocket = SocketIO(`127.0.0.1:3000/${selectedPuzzle.puzzle.metadata.id}`);
 
         this.puzzleSocketService = Object.keys(selectedPuzzle.puzzle.socketService)
-            .map(key => ({ [key]: selectedPuzzle.puzzle.socketService[key].frontend(this.playerSocket).sendEvent }))
+            .map(key => ({
+                [key]: selectedPuzzle.puzzle.socketService[key].frontend(this.playerSocket).sendEvent,
+            }))
             .reduce((a, b) => ({ ...a, ...b }), {});
 
         this.playerToServerService = Object.keys(PlayerToServer)

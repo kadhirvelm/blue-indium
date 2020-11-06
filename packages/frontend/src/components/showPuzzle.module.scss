@@ -1,7 +1,10 @@
+@import "~@blue-indium/components/dist/variables";
+
 .container {
     display: flex;
     flex: 1;
     flex-direction: column;
     height: 100vh;
     width: 100vw;
+    background: rgba($blue-light, 0.15);
 }

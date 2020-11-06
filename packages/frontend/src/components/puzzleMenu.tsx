@@ -1,16 +1,16 @@
 import { InfoCircleOutlined, MenuOutlined, SelectOutlined, UndoOutlined } from "@ant-design/icons";
-import { IConvertToFrontend, IPlayerToServerTypes, IPuzzlePlugin } from "@blue-indium/api";
+import { IConvertToFrontend, IPlayerToServerTypes, ICompletePlugin } from "@blue-indium/api";
 import { Dropdown, Menu, message, Modal } from "antd";
 import * as React from "react";
 import styles from "./puzzleMenu.module.scss";
 
 interface IProps {
     playerToServerService: IConvertToFrontend<IPlayerToServerTypes>;
-    puzzleMetadata: Pick<IPuzzlePlugin<any, any, any>, "metadata">;
+    puzzleMetadata: Pick<ICompletePlugin<any, any, any>, "metadata">;
     resetSelectedPuzzle: () => void;
 }
 
-function showPuzzleMetadataModal(puzzleMetadata: Pick<IPuzzlePlugin<any, any, any>, "metadata">) {
+function showPuzzleMetadataModal(puzzleMetadata: Pick<ICompletePlugin<any, any, any>, "metadata">) {
     const { metadata } = puzzleMetadata;
 
     Modal.info({

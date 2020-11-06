@@ -65,7 +65,7 @@ export class InstantiatePuzzle {
                     return;
                 }
 
-                const newState = this.selectedPuzzle.puzzle.backend[eventName](
+                const newState = this.selectedPuzzle.puzzle.backend[eventName]?.(
                     payload,
                     {
                         gameState: this.gameState,

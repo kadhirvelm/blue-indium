@@ -90,7 +90,9 @@ module.exports = {
         new MiniCssExtractPlugin({
             filename: "components.css",
         }),
-        new CopyWebpackPlugin({ patterns: [{ from: path.join(__dirname, "static"), to: path.join(__dirname, "dist") }] }),
+        new CopyWebpackPlugin({
+            patterns: [{ from: path.join(__dirname, "static"), to: path.join(__dirname, "dist") }],
+        }),
         new webpack.optimize.AggressiveMergingPlugin(),
         ...(process.env.NODE_ENV === "production"
             ? [
