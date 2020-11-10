@@ -1,6 +1,7 @@
 import { IPuzzleFrontend } from "@blue-indium/puzzles";
 import * as React from "react";
-import { getSelectedPuzzle, setSelectedPuzzle } from "../utils/cookieStorage";
+import { assertPlayerExists } from "../utils/assertPlayerExists";
+import { getCurrentPlayer, getSelectedPuzzle, setSelectedPuzzle } from "../utils/cookieStorage";
 import { BlueIndiumLanding } from "./blueIndiumLanding";
 import { ShowPuzzle } from "./showPuzzle";
 
@@ -23,5 +24,14 @@ export const MainPage: React.FC = () => {
         return <BlueIndiumLanding selectPuzzle={updateSelectedPuzzle} />;
     }
 
-    return <ShowPuzzle resetSelectedPuzzle={resetSelectedPuzzle} selectedPuzzle={selectedPuzzle} />;
+    const currentPlayer = getCurrentPlayer();
+    assertPlayerExists(currentPlayer);
+
+    return (
+        <ShowPuzzle
+            currentPlayer={currentPlayer}
+            resetSelectedPuzzle={resetSelectedPuzzle}
+            selectedPuzzle={selectedPuzzle}
+        />
+    );
 };

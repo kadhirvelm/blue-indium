@@ -9,14 +9,17 @@ import {
 import { IPlayer } from "../types/puzzle";
 
 export interface IPlayerToServerTypes {
+    completePuzzle: {};
     resetPuzzle: {};
 }
 
 interface IPlayerToServer extends IToServerEvents {
+    completePuzzle: IToServerSingleEvent<IPlayerToServerTypes["completePuzzle"]>;
     resetPuzzle: IToServerSingleEvent<IPlayerToServerTypes["resetPuzzle"]>;
 }
 
 export const PlayerToServer: IPlayerToServer = {
+    completePuzzle: instantiateToServerEvent<{}>("completePuzzle"),
     resetPuzzle: instantiateToServerEvent<{}>("resetPuzzle"),
 };
 
@@ -29,9 +32,9 @@ export const InfrastructureToServer: IInfrastructureToServer = {
 };
 
 export interface IFromServerToPlayer extends IFromServerEvents {
-    onUpdateGameState: IFromServerSingleEvent<{ gameState: any }>;
+    onUpdateGameState: IFromServerSingleEvent<{ gameState: any; connectedPlayers: IPlayer[] }>;
 }
 
 export const FromServerToPlayer: IFromServerToPlayer = {
-    onUpdateGameState: instantiateFromServerEvent<{ gameState: any }>("onUpdateGameState"),
+    onUpdateGameState: instantiateFromServerEvent<{ gameState: any; connectedPlayers: IPlayer[] }>("onUpdateGameState"),
 };

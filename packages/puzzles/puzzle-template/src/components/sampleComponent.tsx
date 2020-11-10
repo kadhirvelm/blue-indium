@@ -9,24 +9,16 @@ interface IProps {
     services: IConvertToFrontend<ISocketService>;
 }
 
-export class SampleComponent extends React.PureComponent<IProps> {
-    public render() {
-        const { gameState } = this.props;
-        if (gameState === undefined) {
-            return <div>Not connected yet.</div>;
-        }
+export const SampleComponent: React.FC<IProps> = ({ gameState, services }) => {
+    const onButtonClick = () => services.toggleTreasureChest({ isOpen: !gameState?.isTreasureChestOpen });
 
-        return (
-            <div className={styles.sampleComponentContainer}>
-                <Button onClick={this.onButtonClick}>
-                    {gameState.isTreasureChestOpen ? "Close" : "Open"} treasure chest.
-                </Button>
-            </div>
-        );
+    if (gameState === undefined) {
+        return <div>Not connected yet.</div>;
     }
 
-    private onButtonClick = () => {
-        const { gameState, services } = this.props;
-        services.toggleTreasureChest({ isOpen: !gameState?.isTreasureChestOpen });
-    };
-}
+    return (
+        <div className={styles.sampleComponentContainer}>
+            <Button onClick={onButtonClick}>{gameState.isTreasureChestOpen ? "Close" : "Open"} treasure chest.</Button>
+        </div>
+    );
+};

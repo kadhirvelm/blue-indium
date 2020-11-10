@@ -1,8 +1,11 @@
 import * as React from "react";
 import { PuzzlesFrontend, IPuzzleFrontend } from "@blue-indium/puzzles";
-import { dynamicallyImportCSS } from "@blue-indium/api";
-import { Button } from "antd";
+import { dynamicallyImportCSS, IPlayer } from "@blue-indium/api";
+import { Button, Input } from "antd";
+import { UserOutlined } from "@ant-design/icons";
 import styles from "./blueIndiumLanding.module.scss";
+import { getCurrentPlayer, setCurrentPlayer, updateCurrentPlayerInCookies } from "../utils/cookieStorage";
+import { RegisterPlayer } from "./registerPlayer";
 
 interface IProps {
     selectPuzzle: (puzzle: IPuzzleFrontend) => void;
@@ -14,6 +17,8 @@ export const BlueIndiumLanding: React.FC<IProps> = ({ selectPuzzle }) => {
     }, []);
 
     const selectPuzzleCurried = (puzzle: IPuzzleFrontend) => () => selectPuzzle(puzzle);
+
+    const [currentPlayer, updateCurrentPlayer] = React.useState<IPlayer | undefined>(getCurrentPlayer());
 
     const renderSinglePuzzle = (puzzle: IPuzzleFrontend) => {
         const {
@@ -31,7 +36,12 @@ export const BlueIndiumLanding: React.FC<IProps> = ({ selectPuzzle }) => {
                         <span>Recommended: {metadata.recommendedPlayers}</span>
                     </div>
                 </div>
-                <Button onClick={selectPuzzleCurried(puzzle)}>Select puzzle</Button>
+                <Button
+                    disabled={currentPlayer === undefined || currentPlayer.name === ""}
+                    onClick={selectPuzzleCurried(puzzle)}
+                >
+                    Select puzzle
+                </Button>
             </div>
         );
     };
@@ -44,9 +54,36 @@ export const BlueIndiumLanding: React.FC<IProps> = ({ selectPuzzle }) => {
             .map(renderSinglePuzzle);
     };
 
+    const registerNewPlayer = (newPlayer: Omit<IPlayer, "id">) => {
+        const completeNewPlayer = setCurrentPlayer(newPlayer);
+        updateCurrentPlayer(completeNewPlayer);
+    };
+
+    if (currentPlayer === undefined) {
+        return <RegisterPlayer onRegisterPlayer={registerNewPlayer} />;
+    }
+
+    const updateLocalPlayerName = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const updatedPlayer = { ...currentPlayer, name: event.currentTarget.value };
+        updateCurrentPlayerInCookies(updatedPlayer);
+        updateCurrentPlayer(updatedPlayer);
+    };
+
     return (
         <div className={styles.mainPage}>
-            <span className={styles.title}>Welcome to Blue Indium</span>
+            <span className={styles.title}>
+                <span>Welcome to Blue Indium</span>
+                <div className={styles.playerNameContainer}>
+                    <Input
+                        className={styles.inputContainer}
+                        placeholder="Player name"
+                        prefix={<UserOutlined />}
+                        size="middle"
+                        onChange={updateLocalPlayerName}
+                        value={currentPlayer.name}
+                    />
+                </div>
+            </span>
             <div className={styles.puzzleContainer}>{renderAvailablePuzzles()}</div>
         </div>
     );

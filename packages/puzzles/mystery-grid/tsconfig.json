@@ -1,0 +1,18 @@
+{
+    "extends": "../../../tsconfig.json",
+    "compilerOptions": {
+        "rootDir": "./src",
+        "outDir": "./dist",
+        "rootDirs": [
+            "src",
+            "compiled_types",
+            "typings"
+        ],
+        "module": "es2020",
+    },
+    "exclude": [
+        "./dist/*",
+        "./node_modules/*",
+        "./webpack.config.cjs",
+    ]
+}

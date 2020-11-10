@@ -5,8 +5,11 @@ import {
     IConvertToFrontend,
     IDefaultGameState,
     InfrastructureToServer,
+    IPlayer,
     IPlayerToServerTypes,
+    ORIGIN,
     PlayerToServer,
+    PORT,
 } from "@blue-indium/api";
 import { IPuzzleFrontend } from "@blue-indium/puzzles";
 import { Modal } from "antd";
@@ -16,11 +19,13 @@ import { PuzzleMenu } from "./puzzleMenu";
 import styles from "./showPuzzle.module.scss";
 
 interface IProps {
+    currentPlayer: IPlayer;
     resetSelectedPuzzle: () => void;
     selectedPuzzle: IPuzzleFrontend;
 }
 
 interface IState {
+    connectedPlayers: IPlayer[];
     gameState: (IDefaultGameState & any) | undefined;
 }
 
@@ -31,6 +36,7 @@ export class ShowPuzzle extends React.PureComponent<IProps, IState> {
     private playerSocket: SocketIOClient.Socket;
 
     public state: IState = {
+        connectedPlayers: [],
         gameState: undefined,
     };
 
@@ -38,7 +44,7 @@ export class ShowPuzzle extends React.PureComponent<IProps, IState> {
         super(props);
 
         const { selectedPuzzle } = props;
-        this.playerSocket = SocketIO(`127.0.0.1:3000/${selectedPuzzle.puzzle.metadata.id}`);
+        this.playerSocket = SocketIO(`${ORIGIN}:${PORT}/${selectedPuzzle.puzzle.metadata.id}`);
 
         this.puzzleSocketService = Object.keys(selectedPuzzle.puzzle.socketService)
             .map(key => ({
@@ -62,10 +68,11 @@ export class ShowPuzzle extends React.PureComponent<IProps, IState> {
 
     public render() {
         const {
+            currentPlayer,
             resetSelectedPuzzle,
             selectedPuzzle: { puzzle },
         } = this.props;
-        const { gameState } = this.state;
+        const { connectedPlayers, gameState } = this.state;
 
         if (this.puzzleSocketService === undefined || this.playerToServerService === undefined) {
             return null;
@@ -76,14 +83,20 @@ export class ShowPuzzle extends React.PureComponent<IProps, IState> {
         return (
             <div className={styles.container}>
                 <PuzzleMenu
+                    connectedPlayers={connectedPlayers}
+                    currentPlayer={currentPlayer}
                     playerToServerService={this.playerToServerService}
                     resetSelectedPuzzle={resetSelectedPuzzle}
                     puzzleMetadata={puzzle}
                 />
-                {puzzle.frontend(gameState, {
-                    ...this.puzzleSocketService,
-                    ...this.playerToServerService,
-                })}
+                {puzzle.frontend(
+                    gameState,
+                    {
+                        ...this.puzzleSocketService,
+                        ...this.playerToServerService,
+                    },
+                    { allPlayers: connectedPlayers, currentPlayer },
+                )}
             </div>
         );
     }
@@ -91,12 +104,13 @@ export class ShowPuzzle extends React.PureComponent<IProps, IState> {
     private connectSocketAndRegisterPlayer = () => {
         this.playerSocket.on("connect", () => {
             FromServerToPlayer.onUpdateGameState.frontend(this.playerSocket).onEvent(newGameState => {
-                this.setState({ gameState: newGameState.gameState });
+                this.setState({ connectedPlayers: newGameState.connectedPlayers, gameState: newGameState.gameState });
             });
 
+            const { currentPlayer } = this.props;
             InfrastructureToServer.onConnect
                 .frontend(this.playerSocket)
-                .sendEvent({ playerInformation: { id: "sample-player-one", name: "Sample player" } });
+                .sendEvent({ playerInformation: currentPlayer });
         });
     };
 
@@ -109,7 +123,7 @@ export class ShowPuzzle extends React.PureComponent<IProps, IState> {
         }
 
         const resetPuzzle = () => {
-            this.playerToServerService.resetPuzzle({});
+            this.playerToServerService.completePuzzle({});
             resetSelectedPuzzle();
         };
 

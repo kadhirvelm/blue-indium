@@ -1,0 +1,48 @@
+{
+  "name": "@blue-indium/mystery-grid",
+  "version": "0.1.0",
+  "description": "The mystery grid",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "repository": "https://github.com/kadhirvelm/blue-indium",
+  "license": "MIT",
+  "sideEffects": [
+    "*.css"
+  ],
+  "dependencies": {
+    "@blue-indium/api": "^0.1.0",
+    "@blue-indium/components": "^0.1.0",
+    "classnames": "^2.2.6",
+    "lodash": "^4.17.20"
+  },
+  "peerDependencies": {
+    "antd": "^4.8.0",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0"
+  },
+  "scripts": {
+    "build": "webpack --config webpack.config.cjs",
+    "dev:self": "webpack --config webpack.config.cjs --watch",
+    "dev:frontend": "cd ../../frontend && yarn dev",
+    "dev:backend": "cd ../../backend && yarn dev",
+    "dev": "yarn dev:self & yarn dev:frontend & yarn dev:backend",
+    "lint": "eslint . --ext .ts,.tsx"
+  },
+  "devDependencies": {
+    "@blue-indium/scss-modules": "^0.1.0",
+    "@types/classnames": "^2.2.11",
+    "@types/lodash": "^4.14.165",
+    "@types/webpack-env": "^1.15.3",
+    "compression-webpack-plugin": "^6.0.3",
+    "css-loader": "^5.0.0",
+    "mini-css-extract-plugin": "^1.1.1",
+    "node-sass": "^4.13.0",
+    "react-hot-loader": "^4.13.0",
+    "sass": "^1.27.0",
+    "sass-loader": "^10.0.3",
+    "ts-loader": "^6.2.1",
+    "typescript": "^3.7.4",
+    "webpack": "4.44.2",
+    "webpack-bundle-analyzer": "^3.9.0"
+  }
+}

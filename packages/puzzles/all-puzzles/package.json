@@ -8,6 +8,7 @@
   "license": "MIT",
   "dependencies": {
     "@blue-indium/api": "^0.1.0",
+    "@blue-indium/mystery-grid": "^0.1.0",
     "@blue-indium/puzzle-template": "^0.1.0",
     "lodash": "^4.17.20"
   },

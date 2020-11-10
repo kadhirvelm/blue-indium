@@ -3,18 +3,32 @@ import { IPlayerToServerTypes } from "../definitions/puzzleSocketService";
 import { IPlayer } from "../types";
 
 interface IPuzzleState<IGameState, IInternalState> {
+    gameState: IGameState;
+    internalState: IInternalState;
+}
+
+interface IPartialPuzzleState<IGameState, IInternalState> {
     gameState?: Partial<IGameState>;
     internalState?: Partial<IInternalState>;
 }
 
-type IAllowedType = string | number | boolean | string[] | number[] | boolean[] | undefined;
+export type IAllowedType =
+    | string
+    | number
+    | boolean
+    | string[]
+    | number[]
+    | boolean[]
+    | IAllowedTypes[]
+    | undefined
+    | any;
 
-interface IAllowedTypes {
+export interface IAllowedTypes {
     [eventName: string]: IAllowedType | IAllowedTypes;
 }
 
-type IConvertToAllowedTypes<ISocketServiceAllowedTypes, AllowedType> = {
-    [Key in keyof ISocketServiceAllowedTypes]: AllowedType;
+export type IConvertToAllowedTypes<ISocketServiceAllowedTypes, Allowed> = {
+    [Key in keyof ISocketServiceAllowedTypes]: Allowed;
 };
 
 /**
@@ -34,7 +48,7 @@ export type IConvertToBackend<ISocketService, IGameState, IInternalState> = {
         payload: ISocketService[Key],
         state: IPuzzleState<IGameState, IInternalState>,
         players: { currentPlayer: IPlayer; allConnectedPlayers: IPlayer[] },
-    ) => IPuzzleState<IGameState, IInternalState>;
+    ) => IPartialPuzzleState<IGameState, IInternalState>;
 };
 
 /**
@@ -56,6 +70,21 @@ export interface IDefaultGameState {
     hasSolvedPuzzle: boolean;
 }
 
+export interface IDefaultSocketService {
+    /**
+     * Called whenever a new player connects.
+     */
+    onConnect?: {};
+    /**
+     * Called whenever an existing player disconnects.
+     */
+    onDisconnect?: {};
+    /**
+     * Called whenever the puzzle needs to reset.
+     */
+    onReset?: {};
+}
+
 /**
  * The plugin interface for a blue-indium puzzle. The goal here is to handle all the socket implementations in the background, leaving
  * the developer to focus solely on creating their puzzle.
@@ -73,7 +102,7 @@ export interface IPuzzlePlugin<
      * The backend event handling. The events come from `ISocketService` and will get the type safe payload and the current state (both the game state and the internal state). It should return the new state of the
      * puzzle, both game state and internal state, which will in turn fire off an update event to all connected players.
      */
-    backend: IConvertToBackend<ISocketService, IGameState & IDefaultGameState, IInternalState>;
+    backend: IConvertToBackend<ISocketService & IDefaultSocketService, IGameState & IDefaultGameState, IInternalState>;
     /**
      * The frontend display of your puzzle, this is the entry point that blue indium will access to render your puzzle. The socketService events are created
      * from `ISocketService` with all the socket implementations abstracted away so you can just focus on the typed payload.
@@ -81,6 +110,7 @@ export interface IPuzzlePlugin<
     frontend: (
         gameState: (IGameState & IDefaultGameState) | undefined,
         socketService: IConvertToFrontend<ISocketService> & IConvertToFrontend<IPlayerToServerTypes>,
+        players: { allPlayers: IPlayer[]; currentPlayer: IPlayer },
     ) => React.ReactElement | JSX.Element | Promise<React.ReactElement | JSX.Element>;
     /**
      * Initializes the game state and the internal state to the puzzle. Remember the overall state is shared between all players.

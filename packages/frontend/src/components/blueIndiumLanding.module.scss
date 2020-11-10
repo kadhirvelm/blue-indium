@@ -10,10 +10,23 @@
 
 .title {
     display: flex;
+    flex-direction: column;
     padding: 50px;
+    align-items: center;
     justify-content: center;
     font-weight: 500;
     font-size: 40px;
+}
+
+.player-name-container {
+    display: flex;
+    max-width: 300px;
+
+    .input-container {
+        :global(.ant-input) {
+            padding-top: 5px;
+        }
+    }
 }
 
 .puzzle-container {
@@ -36,6 +49,7 @@
     box-shadow: $box-shadow;
     background: rgba($blue-dark, 0.8);
     color: $white;
+    margin: 5px 10px;
     
     &:hover {
         background: $blue-dark;

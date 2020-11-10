@@ -1,0 +1,88 @@
+@import "~@blue-indium/components/dist/variables.scss";
+
+.non-ideal-state {
+    display: flex;
+    flex-direction: column;
+    height: 200px;
+    width: 200px;
+    margin: auto;
+}
+
+.grid-container {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+}
+
+.single-grid {
+    display: flex;
+    height: 200px;
+    width: 200px;
+    border-radius: 5px;
+    margin: 10px;
+    box-shadow: $box-shadow;
+}
+
+.animate-for-everyone {
+    transition: all 500ms ease-out;
+}
+
+.animation-just-for-current-player {
+    transition: all 1500ms ease-out;
+}
+
+.none {
+    background: $white;
+}
+
+.red {
+    background: #CB4335;
+}
+
+.green {
+    background: #229954;
+}
+
+.yellow {
+    background: #F1C40F;
+}
+
+.purple {
+    background: #884EA0;
+}
+
+.ant-popover-override {
+    padding: 0;
+
+    &:global(.ant-popover-title) {
+        padding: 0;
+    }
+}
+
+.menu-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.click-option-row {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+.click-option {
+    width: 15px;
+    height: 15px;
+    border-radius: 3px;
+}
+
+.should-allow-click {
+    cursor: pointer;
+
+    &:hover {
+        box-shadow: 1px 0 $blue-dark, -1px 0 $blue-dark, 0 1px $blue-dark, 0 -1px $blue-dark;
+    }
+}

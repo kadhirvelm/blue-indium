@@ -1,10 +1,12 @@
-import { InfoCircleOutlined, MenuOutlined, SelectOutlined, UndoOutlined } from "@ant-design/icons";
-import { IConvertToFrontend, IPlayerToServerTypes, ICompletePlugin } from "@blue-indium/api";
+import { InfoCircleOutlined, MenuOutlined, SelectOutlined, TeamOutlined, UndoOutlined } from "@ant-design/icons";
+import { ICompletePlugin, IConvertToFrontend, IPlayer, IPlayerToServerTypes } from "@blue-indium/api";
 import { Dropdown, Menu, message, Modal } from "antd";
 import * as React from "react";
 import styles from "./puzzleMenu.module.scss";
 
 interface IProps {
+    connectedPlayers: IPlayer[];
+    currentPlayer: IPlayer;
     playerToServerService: IConvertToFrontend<IPlayerToServerTypes>;
     puzzleMetadata: Pick<ICompletePlugin<any, any, any>, "metadata">;
     resetSelectedPuzzle: () => void;
@@ -38,21 +40,50 @@ function showPuzzleMetadataModal(puzzleMetadata: Pick<ICompletePlugin<any, any, 
     });
 }
 
-export const PuzzleMenu: React.FC<IProps> = ({ playerToServerService, puzzleMetadata, resetSelectedPuzzle }) => {
+function showConnectedPlayers(connectedPlayers: IPlayer[], currentPlayer: IPlayer) {
+    Modal.info({
+        title: "Connected players",
+        content: (
+            <div className={styles.modalContainer}>
+                {connectedPlayers.map(player => (
+                    <div className={styles.puzzleMetadataRow}>
+                        <span className={styles.puzzleMetadataRowTitle}>
+                            {player.name} {currentPlayer.id === player.id && "(you)"}
+                        </span>
+                        <span>{player.id}</span>
+                    </div>
+                ))}
+            </div>
+        ),
+    });
+}
+
+export const PuzzleMenu: React.FC<IProps> = ({
+    connectedPlayers,
+    currentPlayer,
+    playerToServerService,
+    puzzleMetadata,
+    resetSelectedPuzzle,
+}) => {
     const resetPuzzle = () => {
         playerToServerService.resetPuzzle({});
         message.success("Reset");
     };
 
-    const openModal = () => showPuzzleMetadataModal(puzzleMetadata);
+    const showPuzzleMetadata = () => showPuzzleMetadataModal(puzzleMetadata);
+
+    const openCurrentPlayers = () => showConnectedPlayers(connectedPlayers, currentPlayer);
 
     return (
         <div className={styles.topNavigationBar}>
             <Dropdown
                 overlay={
                     <Menu>
-                        <Menu.Item onClick={openModal}>
+                        <Menu.Item onClick={showPuzzleMetadata}>
                             <InfoCircleOutlined /> Information
+                        </Menu.Item>
+                        <Menu.Item onClick={openCurrentPlayers}>
+                            <TeamOutlined /> Players
                         </Menu.Item>
                         <Menu.Item onClick={resetPuzzle}>
                             <UndoOutlined /> Reset puzzle
